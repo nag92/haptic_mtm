@@ -1,0 +1,3 @@
+[submodule "lib/dvrk-ros"]
+	path = lib/dvrk-ros
+	url = https://github.com/jhu-dvrk/dvrk-ros.git

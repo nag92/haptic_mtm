@@ -24,15 +24,14 @@ class UserStudy:
         self._dvrk_on_pub = rospy.Publisher('/dvrk/console/power_on', Empty, queue_size=1)
         self._dvrk_off_pub = rospy.Publisher('/dvrk/console/power_off', Empty, queue_size=1)
         self._dvrk_home_pub = rospy.Publisher('/dvrk/console/home', Empty, queue_size=1)
-        self._goal_pub = rospy.Publisher('/desired_pose', Pose, queue_size=1)
+        self._goal_pub = rospy.Publisher('"/dvrk/MTMR/set_position_goal_cartesian"', Pose, queue_size=1)
         self._time_msg = 0
         self._start_time = 0
         self._active = False
         self._time_pub_thread = 0
         self._my_bag = 0
 
-        self._topic_names = ["/trajectroy",
-                              "/desired_pose",
+        self._topic_names = ["/dvrk/MTMR/set_position_goal_cartesian",
                              "ambf/env/psm/baselink/State",
                              "ambf/env/psm/baselink/Command",
                              "/ambf/image_data/camera1/compressed",
