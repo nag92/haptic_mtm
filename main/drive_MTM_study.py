@@ -8,7 +8,7 @@ import shlex
 import rospy
 from std_msgs.msg import Time
 from std_msgs.msg import Empty
-from geometry_msgs.msg import Pose
+from geometry_msgs.msg import Pose, PoseStamped
 import time
 
 import os
@@ -16,7 +16,9 @@ import os
 import threading
 
 
-class UserStudy:
+class MTM_DRIVER:
+
+
     def __init__(self):
 
         rospy.init_node('user_study_data')
@@ -24,14 +26,17 @@ class UserStudy:
         self._dvrk_on_pub = rospy.Publisher('/dvrk/console/power_on', Empty, queue_size=1)
         self._dvrk_off_pub = rospy.Publisher('/dvrk/console/power_off', Empty, queue_size=1)
         self._dvrk_home_pub = rospy.Publisher('/dvrk/console/home', Empty, queue_size=1)
-        self._goal_pub = rospy.Publisher('"/dvrk/MTMR/set_position_goal_cartesian"', Pose, queue_size=1)
+        self._goal_pub = rospy.Publisher('/dvrk/MTMR/set_position_goal_cartesian', Pose, queue_size=1)
+        rospy.Subscriber("/dvrk/MTMR/position_cartesian_current", PoseStamped, self.updatePose)
         self._time_msg = 0
         self._start_time = 0
         self._active = False
         self._time_pub_thread = 0
         self._my_bag = 0
+        self._current_pose = PoseStamped()
 
-        self._topic_names = ["/dvrk/MTMR/set_position_goal_cartesian",
+        self._topic_names = ["/dvrk/MTMR/twist_body_current",
+                             "/dvrk/MTMR/set_position_goal_cartesian",
                              "ambf/env/psm/baselink/State",
                              "ambf/env/psm/baselink/Command",
                              "/ambf/image_data/camera1/compressed",
@@ -49,6 +54,8 @@ class UserStudy:
                              "/ambf/env/MovingBase/State",
                              "/dvrk/MTML/position_cartesian_current",
                              "/dvrk/MTMR/position_cartesian_current",
+                             "/dvrk/MTMR/position_cartesian_desired",
+                             "/dvrk/MTML/position_cartesian_desired",
                              "/dvrk/footpedals/clutch",
                              "/dvrk/footpedals/coag",
                              "/dvrk/MTML/set_wrench_body",
@@ -61,6 +68,9 @@ class UserStudy:
 
         for name in self._topic_names:
             self._topic_names_str = self._topic_names_str + ' ' + name
+
+    def updatePose(self, data):
+        self._current_pose = data
 
 
     def call(self):
@@ -76,7 +86,7 @@ class UserStudy:
             print "Running Command", command
             command = shlex.split(command)
             self._rosbag_process = subprocess.Popen(command)
-            pose = Pose()
+            pose = self._current_pose.pose
             pose.position.x = float(x.get())
             pose.position.y = float(y.get())
             pose.position.z = float(z.get())
@@ -130,7 +140,7 @@ class UserStudy:
 
 
 
-study = UserStudy()
+study = MTM_DRIVER()
 
 master = Tk()
 master.title("AMBF USER STUDY 1")
@@ -141,6 +151,9 @@ Label(master, text='trial number').grid(row=0)
 Label(master, text='X').grid(row=1)
 Label(master, text='Y').grid(row=2)
 Label(master, text='Z').grid(row=3)
+
+
+
 
 e1 = Entry(master)
 e1.grid(row=0, column=1)
