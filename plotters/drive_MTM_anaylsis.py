@@ -18,6 +18,33 @@ def compute_start_and_end_times( t_start=-1, t_end=-1):
     return t_start, t_end
 
 
+def get_velocity_trajectory(topic_name, t_start=-1, t_end=-1):
+    t_start, t_end = compute_start_and_end_times(t_start, t_end)
+
+    num_msgs = cur_bag.get_message_count(topic_name)
+    force_trajectory = np.zeros(shape=(num_msgs, 3))
+    idx = 0
+    for top, msg, t in cur_bag.read_messages(topics=[topic_name], start_time=t_start, end_time=t_end):
+        cur = np.array([msg.twist.linear.x, msg.twist.linear.y, msg.twist.linear.z])
+        force_trajectory[idx, :] = cur
+        idx = idx + 1
+
+    return force_trajectory
+
+
+def get_force_trajectory(topic_name, t_start=-1, t_end=-1):
+    t_start, t_end = compute_start_and_end_times(t_start, t_end)
+
+    num_msgs = cur_bag.get_message_count(topic_name)
+    force_trajectory = np.zeros(shape=(num_msgs, 3))
+    idx = 0
+    for top, msg, t in cur_bag.read_messages(topics=[topic_name], start_time=t_start, end_time=t_end):
+        cur = np.array([msg.userdata[0], msg.userdata[1], msg.userdata[2]])
+        force_trajectory[idx, :] = cur
+        idx = idx + 1
+
+    return force_trajectory
+
 def compare_MTM_pos(t_start=-1, t_end=-1):
 
     t_start, t_end = compute_start_and_end_times(t_start, t_end)
