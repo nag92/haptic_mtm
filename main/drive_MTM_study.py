@@ -137,9 +137,6 @@ class MTM_DRIVER:
         self._dvrk_home_pub.publish(Empty())
         time.sleep(0.1)
 
-
-
-
 study = MTM_DRIVER()
 
 master = Tk()
