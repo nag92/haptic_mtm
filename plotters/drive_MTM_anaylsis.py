@@ -77,22 +77,18 @@ def compare_MTM_pos(t_start=-1, t_end=-1):
         idx = idx + 1
 
     fig, ax = plt.subplots()
-    ax.plot(current[:, 0], current[:, 1], 'r')
-    ax.plot(desired[:, 0], desired[:, 1], 'k')
+    #ax.plot(current[:, 0], current[:, 1], 'r')
+    #ax.plot(desired[:, 0], desired[:, 1], 'k')
     ax.plot(goal[:, 0], goal[:, 1], 'b*')
-    ax.set(xlabel='time (s)', ylabel='voltage (mV)',
-           title='About as simple as it gets, folks')
     ax.grid()
 
     fig.savefig("test.png")
     plt.show()
 
-
-
 if __name__ == "__main__":
 
 
-    file = ""
+    file = "/home/nathaniel/Downloads/0_2020-02-19_11_42_38.972441.bag"
 
     cur_bag = rosbag.Bag(file)
 
@@ -104,3 +100,4 @@ if __name__ == "__main__":
         ctr = ctr + 1
         final_time = time
 
+    compare_MTM_pos(t_end=final_time)
