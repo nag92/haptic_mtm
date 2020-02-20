@@ -24,14 +24,18 @@ if __name__ == '__main__':
     psm_joint_names = psm_handle.get_joint_names() # Get a list of children names belonging to this obj
     print(psm_joint_names)
     # psm_handle.set_joint_pos(1, 0.5)
+    time.sleep(0.5)
     q = np.array([psm_handle.get_joint_pos(0), psm_handle.get_joint_pos(1), psm_handle.get_joint_pos(4),
                   psm_handle.get_joint_pos(5), psm_handle.get_joint_pos(6), psm_handle.get_joint_pos(7)])
-    print q
+
+
     F = ForwardKinematics(q)
-    print "forward kinematics is ", F[-1]
+    goal = F[-1]
+    goal[0][-1] = goal[0][-1] + 0.1
+    print "forward kinematics is ", goal
     # goal = np.array([1, 0, 0, -0.01, 0, 1, 0, -0.003, 0, 0, 1, -0.01, 0, 0, 0, 1]).reshape((4, 4))
-    goal = np.array([-0.93575205, 0.35095179, 0.03465456, 0.01259456, -0.35120822, -0.93629631, -0.00141244, 0.01273318, 0.03195124, -0.01349266, 0.99939835, 0.00977501, 0., 0., 0., 1.]).reshape((4, 4))
-    print "goal is ", goal
+    # goal = np.array([-0.93575205, 0.35095179, 0.03465456, 0.01259456, -0.35120822, -0.93629631, -0.00141244, 0.01273318, 0.03195124, -0.01349266, 0.99939835, 0.00977501, 0., 0., 0., 1.]).reshape((4, 4))
+    # print "goal is ", goal
     IK = InverseKinematics(q, goal)
     print "inverse kinematics ", IK
     # forward

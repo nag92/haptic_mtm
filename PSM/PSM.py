@@ -96,13 +96,14 @@ def jacob(q):
 
 def InverseKinematics(q_, goal):
 
-    tol = 0.001
-    max_iter = 500
+    tol = 0.1
+    max_iter = 50
     step = 0
-    e = 100
+    dq = 100
     q = copy.deepcopy(q_)
 
-    while step < max_iter or abs(e) < tol:
+    while step < max_iter or dq > tol:
+        step = step + 1
         alpha = 0.01
         pos = ForwardKinematics(q)
         final = pos[-1]
@@ -115,6 +116,7 @@ def InverseKinematics(q_, goal):
         J = jacob(q)
         dq = np.dot(np.linalg.pinv(J), e)
         dq = alpha*np.linalg.norm(dq)
+        print dq
         q += dq
 
     return q
