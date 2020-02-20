@@ -109,11 +109,12 @@ def InverseKinematics(q_, goal):
 
         dx = goal[-1, 0:3] - final[-1, 0:3]
 
-        dr = 0.5 * (final[0, 0:3] % goal[0, 0:3]) + (final[1, 0:3] % goal[1, 0:3]) + (final[2, 0:3] % goal[2, 0:3]);
+        dr = 0.5 * (final[0, 0:3] % goal[0, 0:3]) + (final[1, 0:3] % goal[1, 0:3]) + (final[2, 0:3] % goal[2, 0:3])
 
-        e = np.array( [ dx[0], dx[1], dx[2], dr[0], dr[1], dr[2] ] ).reshape((-1,1))
+        e = np.array([dx[0], dx[1], dx[2], dr[0], dr[1], dr[2]]).reshape((-1,1))
         J = jacob(q)
         dq = np.linalg.pinv(J)*e
         dq = alpha*np.linalg.norm(dq)
         q += dq
 
+    return q
