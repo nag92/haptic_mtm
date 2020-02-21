@@ -2,7 +2,7 @@
 from ambf_client import Client
 import time
 import numpy as np
-
+import copy
 from PSM import ForwardKinematics, InverseKinematics
 import draw_helix
 
@@ -30,20 +30,18 @@ if __name__ == '__main__':
 
 
     F = ForwardKinematics(q)
-    goal = F[-1]
-    goal[0][-1] = goal[0][-1] + 0.1
+    goal = copy.deepcopy(F[-1])
+    goal[0][-1] = goal[0][-1] + 0.2
     print "forward kinematics is ", goal
-    # goal = np.array([1, 0, 0, -0.01, 0, 1, 0, -0.003, 0, 0, 1, -0.01, 0, 0, 0, 1]).reshape((4, 4))
-    # goal = np.array([-0.93575205, 0.35095179, 0.03465456, 0.01259456, -0.35120822, -0.93629631, -0.00141244, 0.01273318, 0.03195124, -0.01349266, 0.99939835, 0.00977501, 0., 0., 0., 1.]).reshape((4, 4))
-    # print "goal is ", goal
+    print "FK ", F[-1]
+    #
+    # # goal = np.array([1, 0, 0, -0.01, 0, 1, 0, -0.003, 0, 0, 1, -0.01, 0, 0, 0, 1]).reshape((4, 4))
+    # # goal = np.array([-0.93575205, 0.35095179, 0.03465456, 0.01259456, -0.35120822, -0.93629631, -0.00141244, 0.01273318, 0.03195124, -0.01349266, 0.99939835, 0.00977501, 0., 0., 0., 1.]).reshape((4, 4))
+    # # print "goal is ", goal
     IK = InverseKinematics(q, goal)
+    print "q ", q
     print "inverse kinematics ", IK
-    # forward
-    # kinematics is [[-0.93575205  0.35095179  0.03465456  0.01259456]
-    #                [-0.35120822 - 0.93629631 - 0.00141244  0.01273318]
-    # [0.03195124 - 0.01349266
-    # 0.99939835
-    # 0.00977501]
-    # [0.          0.          0.          1.]]
-    # Lastly to cleanup
-    _client.clean_up()
+    print ForwardKinematics(IK)[-1]
+    # psm_handle.set_joint()
+    # # Lastly to cleanup
+    # _client.clean_up()

@@ -2,7 +2,7 @@
 import numpy as np
 from math import cos, sin
 from scipy.optimize import lsq_linear
-
+from math import atan2, tan, sqrt, pow
 import copy
 
 def lse(A, b, B, d):
@@ -81,16 +81,40 @@ def jacob(q):
         O_prev = np.array([0,0,0])
         z_prev = np.array([0,0,1])
         if i is not 2:
-            Jv = z_prev * np.cross(z_prev, final[-1, :3] - O_prev)
+            Jv = np.cross(z_prev, final[:3, -1] - O_prev)
             J[:3, i] = Jv
             J[3:, i] = z_prev
-            O_prev = current[-1, :3]
-            z_prev = current[-2, :3].reshape((-1, 1))
+            O_prev = current[ :3, - 1]
+            z_prev = current[:3, -2].reshape((-1, 1))
         else:
             J[:3, i] = z_prev
             J[3:, i] = [0,0,0]
 
     return J
+
+
+def ik(goal):
+
+    q = []
+    pos = goal[:3, 3]
+    r = goal[:3, :3]
+
+    x = pos[0]
+    y = pos[1]
+    z = pos[2]
+    q[0] = atan2(-x, z)
+    q[1] = atan2(y, z)
+    q[2] = sqrt(pow(y, 2) + pow(z-0.4318, 2) + pow(x, 2))
+
+    q[4] = atan2(sqrt(1 - pow(sin(q[0])*r[0, 2] - cos(q[0])*(r[1, 2]))), sin(q[0])*r[0,2] - cos(q[0])*r[1, 2])
+
+    q[3] = atan2(-cos(q[0])*sin(q[1]+q[2])*r[0, 2] - sin(q[0])*sin(q[1]+q[2])*r[1,2] + cos(q[1]+q[2])*r[2,2],
+                 cos(q[0])*cos(q[1]+q[2])*r[0,2] + sin(q[0])*cos(q[1]+q[2])*r[1,2] + sin(q[1]+q[2])*r[2,2] )
+
+    q[5] = atan2(  -sin(q[0])*r[0,0] + cos(q[0])*r[1,0], sin(q[0])*r[0,1] - cos(q[0])*r[1,1])
+
+    return q
+
 
 
 
@@ -108,15 +132,17 @@ def InverseKinematics(q_, goal):
         pos = ForwardKinematics(q)
         final = pos[-1]
 
-        dx = goal[-1, 0:3] - final[-1, 0:3]
-
+        dx = goal[0:3, -1] - final[0:3, -1]
+        print dx
         dr = 0.5 * (final[0, 0:3] % goal[0, 0:3]) + (final[1, 0:3] % goal[1, 0:3]) + (final[2, 0:3] % goal[2, 0:3])
 
         e = np.array([dx[0], dx[1], dx[2], dr[0], dr[1], dr[2]]).reshape((-1,1))
+
         J = jacob(q)
+        print J
         dq = np.dot(np.linalg.pinv(J), e)
         dq = alpha*np.linalg.norm(dq)
-        print dq
+
         q += dq
 
     return q
