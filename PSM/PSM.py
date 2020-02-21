@@ -57,7 +57,7 @@ def ForwardKinematics(q):
     a = [ 0, 0, 0, 0, 0, 0.0091, 0  ]
     alpha = [ 0.5*pi, -0.5*pi, 0.5*pi,0, -0.5*pi, -0.5*pi, -0.5*pi ]
     D = [ 0, 0, q[2] - 0.4318,  0.4162, 0, 0, 0.0102 ]
-    theta = [ q[0] + 0.5*pi, q[1] - 0.5*pi, 0, 0, q[3], q[4] - 0.5*pi, q[5] - 0.5*pi, 0]
+    theta = [ q[0] + 0.5*pi, q[1] - 0.5*pi, 0, q[3], q[4] - 0.5*pi, q[5] - 0.5*pi, 0]
     F = []
 
     lastFrame = np.eye(4)
@@ -95,7 +95,7 @@ def jacob(q):
 
 def ik(goal):
 
-    q = []
+    q = [0, 0, 0, 0, 0, 0]
     pos = goal[:3, 3]
     r = goal[:3, :3]
 
@@ -106,7 +106,7 @@ def ik(goal):
     q[1] = atan2(y, z)
     q[2] = sqrt(pow(y, 2) + pow(z-0.4318, 2) + pow(x, 2))
 
-    q[4] = atan2(sqrt(1 - pow(sin(q[0])*r[0, 2] - cos(q[0])*(r[1, 2]))), sin(q[0])*r[0,2] - cos(q[0])*r[1, 2])
+    q[4] = atan2(sqrt(1 - pow(sin(q[0])*r[0, 2] - cos(q[0])*(r[1, 2]),2 )), sin(q[0])*r[0,2] - cos(q[0])*r[1, 2])
 
     q[3] = atan2(-cos(q[0])*sin(q[1]+q[2])*r[0, 2] - sin(q[0])*sin(q[1]+q[2])*r[1,2] + cos(q[1]+q[2])*r[2,2],
                  cos(q[0])*cos(q[1]+q[2])*r[0,2] + sin(q[0])*cos(q[1]+q[2])*r[1,2] + sin(q[1]+q[2])*r[2,2] )
@@ -114,9 +114,6 @@ def ik(goal):
     q[5] = atan2(  -sin(q[0])*r[0,0] + cos(q[0])*r[1,0], sin(q[0])*r[0,1] - cos(q[0])*r[1,1])
 
     return q
-
-
-
 
 def InverseKinematics(q_, goal):
 
@@ -133,13 +130,11 @@ def InverseKinematics(q_, goal):
         final = pos[-1]
 
         dx = goal[0:3, -1] - final[0:3, -1]
-        print dx
         dr = 0.5 * (final[0, 0:3] % goal[0, 0:3]) + (final[1, 0:3] % goal[1, 0:3]) + (final[2, 0:3] % goal[2, 0:3])
 
         e = np.array([dx[0], dx[1], dx[2], dr[0], dr[1], dr[2]]).reshape((-1,1))
 
         J = jacob(q)
-        print J
         dq = np.dot(np.linalg.pinv(J), e)
         dq = alpha*np.linalg.norm(dq)
 

@@ -33,7 +33,7 @@ def ForwardKinematics(q):
 
 if __name__ == '__main__':
 
-    q = np.array([0.2, 0.25, 0.4])
+    q = np.array([0.0, 0.5*3.14, 0.6])
     F = ForwardKinematics(q)
     # x, y, z = solver(goal)
     # zGuess = np.array([0.1, 0.1, 0.1])
