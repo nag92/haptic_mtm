@@ -33,7 +33,7 @@ def ForwardKinematics(q):
 
 if __name__ == '__main__':
 
-    q = np.array([0.0, 0.5*3.14, 0.6])
+    q = np.array([0.0, 0.5*3.14, 0.9])
     F = ForwardKinematics(q)
     # x, y, z = solver(goal)
     # zGuess = np.array([0.1, 0.1, 0.1])
@@ -44,11 +44,14 @@ if __name__ == '__main__':
     x = goal[0]
     y = goal[1]
     z = goal[2]
-    theta1 = atan2(-x, z)
-    theta2 = atan2(y, z)
-    d = sqrt(pow(y, 2) + pow(z-0.4318, 2) + pow(x, 2))
-    print(theta1)
-    print(theta2)
-    print(d)
+
+    print(x)
+    print(z)
+    q[0] = atan2(-x, z)
+    q[1] = atan2(y, z)
+    q[2] = sqrt(pow(y, 2) + pow(z-0.4318, 2) + pow(x, 2))
+    print(q[0])
+    print(q[1])
+    print(q[2])
 
     # print("solution is ", x, y, z)
