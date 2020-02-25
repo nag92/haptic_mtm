@@ -6,8 +6,12 @@ import csv
 import matplotlib.pyplot as plt
 
 def getData(bag, topic):
-
-
+    """
+    Extract a pos from the a topic
+    :param bag: path to bag file
+    :param topic: name of topic
+    :return: the pos from that topic in a Nx3 array
+    """
     cur_bag = rosbag.Bag(bag)
 
     t_start = rospy.Time(cur_bag.get_start_time())
@@ -48,8 +52,13 @@ def make_steps(data):
 
 
 def make_file(data, steps, name):
-
-
+    """
+    Writes the data into a CSV file
+    :param data: data nx3
+    :param steps: steps betwen data Nx3
+    :param name: name of CSV file
+    :return: None
+    """
     with open(name + '.csv', mode='w') as f:
         writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
