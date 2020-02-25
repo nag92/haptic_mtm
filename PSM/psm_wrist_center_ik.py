@@ -85,7 +85,7 @@ if __name__ == '__main__':
     goal_p = np.array(F06[0:3, 3])
     goal_point = goal_p + (0.4318-0.4162+0.0091)*goal_R[2]
 
-    theta1, theta2, d = InverseKinematics(goal_point)
+    theta1, theta2, d = InverseKinematics(goal_point)2
     wrist_rot_matrix, theta4, theta5, theta6 = IK_orientation(goal_R, F)
     calc_F = ForwardKinematics([theta1, theta2, d, theta4, theta5, theta6])
     calc_F06 = np.matmul(np.matmul(np.matmul(np.matmul(np.matmul(calc_F[0], calc_F[1]), calc_F[2]), calc_F[3]), calc_F[4]), calc_F[5])
