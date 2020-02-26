@@ -4,7 +4,8 @@ import rospy
 import numpy as np
 import csv
 import matplotlib.pyplot as plt
-
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 def getData(bag, topic):
     """
     Extract a pos from the a topic
@@ -51,7 +52,7 @@ def make_steps(data):
             steps.append(interval)
             fixed.append(curr)
 
-    return fixed, steps
+    return np.array(fixed), steps
 
 
 def make_file(data, steps, name):
@@ -77,6 +78,11 @@ if __name__ == "__main__":
     topic = "/dvrk/PSM2/position_cartesian_current"
     file_name = "test"
     data = getData(file, topic)
-    x = data[:,0]
     rnd, steps = make_steps(data)
-    make_file(rnd, steps, file_name)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    ax.plot( rnd[:,0], rnd[:,1], rnd[:,2]   )
+    plt.show()
+    #make_file(rnd, steps, file_name)
