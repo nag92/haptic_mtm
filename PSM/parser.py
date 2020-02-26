@@ -37,18 +37,21 @@ def make_steps(data):
     :param data: numpy array
     :return: array steps between the data points
     """
-    rnd = np.round(data, 3)
     steps = []
-    curr = rnd[0]
+    fixed = []
+    curr = data[0]
     count = 0
     steps.append(curr-curr)
-    for ii in xrange(0, len(rnd)-1):
-        curr = rnd[ii]
-        nxt = rnd[ii+1]
-        interval = nxt-curr
-        steps.append(np.round(interval,3))
+    fixed.append(np.round(curr,3))
+    for ii in xrange(0, len(data)-1):
+        curr = np.round(data[ii],3)
+        nxt = np.round(data[ii+1],3)
+        interval = np.round(nxt-curr, 3)
+        if abs(interval[0]) > 0 or abs(interval[1]) > 0 or abs(interval[2]) > 0:
+            steps.append(interval)
+            fixed.append(curr)
 
-    return rnd, steps
+    return fixed, steps
 
 
 def make_file(data, steps, name):
@@ -70,7 +73,7 @@ def make_file(data, steps, name):
 
 if __name__ == "__main__":
 
-    file = "/home/nathaniel/Documents/2020-02-25_14:00:07.940022.bag"
+    file = "/home/nathanielgoldfarb/Downloads/2020-02-25_14:00:07.940022.bag"
     topic = "/dvrk/PSM2/position_cartesian_current"
     file_name = "test"
     data = getData(file, topic)
