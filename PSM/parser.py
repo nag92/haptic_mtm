@@ -24,8 +24,9 @@ def getData(bag, topic):
 
     for top, msg, t in cur_bag.read_messages(topics=[topic],
                                              start_time=t_start,
+                                             start_time=t_start,
                                              end_time=t_end):
-        cur = np.array([msg.pose.position.x, msg.pose.position.y, msg.pose.position.y])
+        cur = np.array([msg.pose.position.x, msg.pose.position.y, msg.pose.position.z])
         data[idx, :] = cur
         idx = idx + 1
 
@@ -83,6 +84,6 @@ if __name__ == "__main__":
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
 
-    ax.plot( rnd[:,0], rnd[:,1], rnd[:,2]   )
+    ax.plot(rnd[:,0], rnd[:,1], rnd[:,2])
     plt.show()
     #make_file(rnd, steps, file_name)
