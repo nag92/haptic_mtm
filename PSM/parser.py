@@ -4,9 +4,14 @@ import numpy as np
 import csv
 import math
 import matplotlib.pyplot as plt
+<<<<<<< HEAD
 from mpl_toolkits.mplot3d import Axes3D
 
 
+=======
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+>>>>>>> 17d2247177e1d7751b5aadf4a43e5030a1ad051b
 def getData(bag, topic):
     """
     Extract a pos from the a topic
@@ -24,6 +29,7 @@ def getData(bag, topic):
     idx = 0
 
     for top, msg, t in cur_bag.read_messages(topics=[topic],
+                                             start_time=t_start,
                                              start_time=t_start,
                                              end_time=t_end):
         cur = np.array([msg.pose.position.x, msg.pose.position.y, msg.pose.position.z])
@@ -86,11 +92,20 @@ if __name__ == "__main__":
     file_name = "/home/vignesh/Thesis_Suture_data/trial2/suture_data_trial2/781266"
     data = getData(file, topic)
     rnd, steps = make_steps(data)
+<<<<<<< HEAD
     make_file(rnd, steps, file_name)
+=======
+>>>>>>> 17d2247177e1d7751b5aadf4a43e5030a1ad051b
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
 
+<<<<<<< HEAD
     ax.plot(rnd[:, 0], rnd[:, 1], rnd[:, 2])
     plt.savefig('/home/vignesh/Thesis_Suture_data/trial2/suture_data_trial2/781266.png')
     plt.show()
+=======
+    ax.plot(rnd[:,0], rnd[:,1], rnd[:,2])
+    plt.show()
+    #make_file(rnd, steps, file_name)
+>>>>>>> 17d2247177e1d7751b5aadf4a43e5030a1ad051b
