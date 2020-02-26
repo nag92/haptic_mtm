@@ -94,6 +94,4 @@ if __name__ == "__main__":
     ax.plot(rnd[:, 0], rnd[:, 1], rnd[:, 2])
     plt.savefig('/home/vignesh/Thesis_Suture_data/trial2/suture_data_trial2/781266.png')
     plt.show()
-    ax.plot(rnd[:,0], rnd[:,1], rnd[:,2])
-    plt.show()
-    #make_file(rnd, steps, file_name)
+
