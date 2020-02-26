@@ -1,9 +1,11 @@
-
 import rosbag
 import rospy
 import numpy as np
 import csv
+import math
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
 
 def getData(bag, topic):
     """
@@ -24,7 +26,7 @@ def getData(bag, topic):
     for top, msg, t in cur_bag.read_messages(topics=[topic],
                                              start_time=t_start,
                                              end_time=t_end):
-        cur = np.array([msg.pose.position.x, msg.pose.position.y, msg.pose.position.y])
+        cur = np.array([msg.pose.position.x, msg.pose.position.y, msg.pose.position.z])
         data[idx, :] = cur
         idx = idx + 1
 
@@ -46,12 +48,14 @@ def make_steps(data):
     for ii in xrange(0, len(data)-1):
         curr = np.round(data[ii],3)
         nxt = np.round(data[ii+1],3)
+        # curr = round_nearest(data[ii], 0.005)
+        # nxt = round_nearest(data[ii+1], 0.005)
         interval = np.round(nxt-curr, 3)
         if abs(interval[0]) > 0 or abs(interval[1]) > 0 or abs(interval[2]) > 0:
             steps.append(interval)
             fixed.append(curr)
 
-    return fixed, steps
+    return np.array(fixed), steps
 
 
 def make_file(data, steps, name):
@@ -70,13 +74,23 @@ def make_file(data, steps, name):
         for d, step in zip(data, steps):
             writer.writerow([ d[0], step[0], d[1], step[1], d[2], step[2]])
 
+def round_nearest(x, a):
+    return np.round(np.round(x / a) * a, -int(math.floor(math.log10(a))))
+
+
 
 if __name__ == "__main__":
 
-    file = "/home/nathanielgoldfarb/Downloads/2020-02-25_14:00:07.940022.bag"
+    file = "/home/vignesh/Thesis_Suture_data/trial2/suture_data_trial2/2020-02-25_20:04:47.781266.bag"
     topic = "/dvrk/PSM2/position_cartesian_current"
-    file_name = "test"
+    file_name = "/home/vignesh/Thesis_Suture_data/trial2/suture_data_trial2/781266"
     data = getData(file, topic)
-    x = data[:,0]
     rnd, steps = make_steps(data)
     make_file(rnd, steps, file_name)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    ax.plot(rnd[:, 0], rnd[:, 1], rnd[:, 2])
+    plt.savefig('/home/vignesh/Thesis_Suture_data/trial2/suture_data_trial2/781266.png')
+    plt.show()
