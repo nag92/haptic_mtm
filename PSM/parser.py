@@ -81,17 +81,22 @@ def round_nearest(x, a):
 
 if __name__ == "__main__":
 
-    file = "/home/vignesh/Thesis_Suture_data/trial2/suture_data_trial2/2020-02-25_20:04:47.781266.bag"
+    file = "/home/nathaniel/Downloads/trial2/suture_data_trial2/2020-02-25_20:04:47.781266.bag"
     topic = "/dvrk/PSM2/position_cartesian_current"
     file_name = "/home/vignesh/Thesis_Suture_data/trial2/suture_data_trial2/781266"
     data = getData(file, topic)
     rnd, steps = make_steps(data)
-    make_file(rnd, steps, file_name)
-
+    #make_file(rnd, steps, file_name)
+    plt.rcParams.update({'font.size': 16})
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-
-    ax.plot(rnd[:, 0], rnd[:, 1], rnd[:, 2])
-    plt.savefig('/home/vignesh/Thesis_Suture_data/trial2/suture_data_trial2/781266.png')
+    ax.set_title("Discretized data of suturing")
+    ax.set_xlabel('X(mm)', labelpad=10)
+    ax.set_ylabel('Y(mm)', labelpad=10)
+    ax.set_zlabel('Z(mm)', labelpad=10)
+    ax.plot(rnd[:, 0]*1000, rnd[:, 1]*1000, rnd[:, 2]*1000)
+    ax.plot(data[:, 0]*1000, data[:, 1]*1000, data[:, 2]*1000)
+    ax.legend(["Discretized", "Raw"])
+    #plt.savefig('/home/vignesh/Thesis_Suture_data/trial2/suture_data_trial2/781266.png')
     plt.show()
 
