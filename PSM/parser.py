@@ -24,9 +24,41 @@ def getData(bag, topic):
 
     for top, msg, t in cur_bag.read_messages(topics=[topic],
                                              start_time=t_start,
-                                             start_time=t_start,
                                              end_time=t_end):
         cur = np.array([msg.pose.position.x, msg.pose.position.y, msg.pose.position.z])
+        data[idx, :] = cur
+        idx = idx + 1
+
+    return data
+
+
+
+def getData(bag, topic, pos=1):
+    """
+    Extract a pos from the a topic
+    :param bag: path to bag file
+    :param topic: name of topic
+    :return: the pos from that topic in a Nx3 array
+    """
+    cur_bag = rosbag.Bag(bag)
+
+    t_start = rospy.Time(cur_bag.get_start_time())
+    t_end = rospy.Time(cur_bag.get_end_time())
+
+    num_msgs = cur_bag.get_message_count(topic)
+    if pos:
+        data = np.zeros(shape=(num_msgs, 3))
+    else:
+        data = np.zeros(shape=(num_msgs, 4))
+    idx = 0
+
+    for top, msg, t in cur_bag.read_messages(topics=[topic],
+                                             start_time=t_start,
+                                             end_time=t_end):
+        if pos:
+            cur = np.array([msg.pose.position.x, msg.pose.position.y, msg.pose.position.z])
+        else:
+            cur = np.array([msg.pose.orientation.x, msg.pose.orientation.y, msg.pose.orientation.z, msg.pose.orientation.w ])
         data[idx, :] = cur
         idx = idx + 1
 
